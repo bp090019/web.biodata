@@ -123,6 +123,9 @@
   </style>
 </head>
 <body>
+	<div> 
+		
+	</div>
   <div class="container">
     <h1>Biodata Diri</h1>
     <p style="text-align: center; font-weight: bold;">Foto Profil</p>
@@ -169,6 +172,32 @@
     <img class="modal-content" id="imgZoom">
   </div>
   <script>
+	const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const loginScreen = document.getElementById('loginScreen');
+    const biodataWrapper = document.getElementById('biodataWrapper');
+    
+    const correctUsername = 'selamat';
+    const correctPassword = 'takok to';
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (username === correctUsername && password === correctPassword) {
+        
+        loginScreen.classList.add('hidden');
+        setTimeout(() => {
+          biodataWrapper.classList.add('visible');
+          document.body.style.overflow = 'auto';
+        }, 500);
+        errorMsg.style.display = 'none';
+      } else {
+        
+        errorMsg.style.display = 'block';
+        setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
+      }
+	});
+	  
   var modal = document.getElementById("myModal");
   var img = document.getElementById("myImg");
   var modalImg = document.getElementById("imgZoom");
