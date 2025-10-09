@@ -123,9 +123,19 @@
   </style>
 </head>
 <body>
-	<div> 
+	<div id="loginScreen">
+    <div class="login-container">
+      <h2>Masuk ke Biodata</h2>
+      <p style="color: #666; margin-bottom: 20px;">Silakan login untuk melihat biodata.</p>
+      <form id="loginForm">
+        <input type="text" id="username" placeholder="Username (contoh: bagas)" required>
+        <input type="password" id="password" placeholder="Password (contoh: 123456)" required>
+        <button type="submit">Masuk</button>
+        <button type="button" class="skip-btn" onclick="skipLogin()">Skip untuk Demo</button>
+      </form>
+      <div id="errorMsg" class="error-msg">Username atau password salah! Coba lagi.</div>
+    </div>
 		
-	</div>
   <div class="container">
     <h1>Biodata Diri</h1>
     <p style="text-align: center; font-weight: bold;">Foto Profil</p>
