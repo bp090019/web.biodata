@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <title>Biodata Diri</title>
+  <title>Biodata Diri - Login Required</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,11 +13,104 @@
       background-size: 800% 800%;
       animation: gradientBG 15s ease infinite;
       color: #333;
+      overflow: hidden;
     }
     @keyframes gradientBG {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
+    }
+
+    #loginScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    #loginScreen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .login-container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0px 0px 20px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+      animation: fadeIn 1s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .login-container h2 {
+      color: #444;
+      margin-bottom: 20px;
+      font-size: 28px;
+    }
+    .login-container input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #4facfe;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    .login-container input:focus {
+      outline: none;
+      border-color: #43e97b;
+      box-shadow: 0 0 5px rgba(67, 233, 123, 0.5);
+    }
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(to right, #43e97b, #38f9d7);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      margin-top: 10px;
+    }
+    .login-container button:hover {
+      transform: scale(1.02);
+    }
+    .error-msg {
+      color: #f00;
+      margin-top: 10px;
+      display: none;
+    }
+    .skip-btn {
+      background: #ddd;
+      color: #666;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .skip-btn:hover {
+      background: #ccc;
+    }
+	  
+    #biodataWrapper {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    #biodataWrapper.visible {
+      opacity: 1;
+      visibility: visible;
     }
     .container {
       width: 70%;
@@ -78,6 +171,8 @@
     td {
       padding: 10px;
       transition: background-color 0.3s ease, color 0.3s ease;
+      word-wrap: break-word; /* Fix teks panjang */
+      max-width: 300px;
     }
     tr:nth-child(even) {
       background-color: #f9f9f9;
@@ -86,7 +181,7 @@
       background-color: #4facfe;
       color: white;
     }
-    .modal{
+    .modal {
       display: none;
       position: fixed;
       z-index: 999;
@@ -95,138 +190,158 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background: rgba(0,0,0,0,8):
+      background: rgba(0,0,0,0.8); 
     }
     .modal-content {
-       margin: auto;
-       display: block;
-       max-width: 80%;
-       border-radius: 10px;
-       animation:zomin 0.5s;
+      margin: auto;
+      display: block;
+      max-width: 80%;
+      border-radius: 10px;
+      animation: zomin 0.5s;
     }
     @keyframes zomin {
-       from {transform: scale(0);}
-       to {transform: scale(1);}
+      from { transform: scale(0); }
+      to { transform: scale(1); }
     }
     .close {
-       position: absolute;
-       top: 20px;
-       right: 35px;
-       color: white;
-       font-size: 40px;
-       font-weight: bold;
-       cursor: pointer;
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: white;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
     }
     .close:hover {
-       color: #f00;
+      color: #f00;
+    }
+
+    @media (max-width: 768px) {
+      .container { width: 95%; margin: 20px auto; padding: 15px; }
+      .login-container { padding: 30px 20px; }
+      h1 { font-size: 24px; }
+      .profile-pic img { width: 120px; height: 120px; }
     }
   </style>
 </head>
 <body>
-	<div id="loginScreen">
+  <div id="loginScreen">
     <div class="login-container">
       <h2>Masuk ke Biodata</h2>
       <p style="color: #666; margin-bottom: 20px;">Silakan login untuk melihat biodata.</p>
       <form id="loginForm">
-        <input type="text" id="username" placeholder="Username (contoh: bagas)" required>
-        <input type="password" id="password" placeholder="Password (contoh: 123456)" required>
+        <input type="text" id="username" placeholder="Username (contoh: selamat)" required>
+        <input type="password" id="password" placeholder="Password (contoh: takok to)" required>
         <button type="submit">Masuk</button>
         <button type="button" class="skip-btn" onclick="skipLogin()">Skip untuk Demo</button>
       </form>
       <div id="errorMsg" class="error-msg">Username atau password salah! Coba lagi.</div>
     </div>
-		
-  <div class="container">
-    <h1>Biodata Diri</h1>
-    <p style="text-align: center; font-weight: bold;">Foto Profil</p>
-    <div class="profile-pic">
-      <img id="myImg" src="IMG-20250827-WA0021.jpg" alt="Foto profil">  
-    </div>
-    <table>
-      <tr>
-        <th>Data</th>
-        <th>Keterangan</th>
-	  </tr>
-	  <tr>
-		  <td>Nama</td>
-		  <td>Muhammad Bagas Pratama</td>
-	  </tr>
-	  <tr>
-  		  <td>Tempat, Tanggal Lahir</td>
-  		  <td>Kediri, 31 Juli 2008</td>
-	  </tr>
-	  <tr>
-	      <td>Alamat</td>
+  </div>
+	
+  <div id="biodataWrapper">
+    <div class="container">
+      <h1>Biodata Diri</h1>
+      <p style="text-align: center; font-weight: bold;">Foto Profil</p>
+      <div class="profile-pic">
+        <img id="myImg" src="IMG-20250827-WA0021.jpg" alt="Foto profil" onerror="this.src='https://via.placeholder.com/180?text=Profile+Pic'">  
+      </div>
+      <table>
+        <tr>
+          <th>Data</th>
+          <th>Keterangan</th>
+        </tr>
+        <tr>
+          <td>Nama</td>
+          <td>Muhammad Bagas Pratama</td>
+        </tr>
+        <tr>
+          <td>Tempat, Tanggal Lahir</td>
+          <td>Kediri, 31 Juli 2008</td>
+        </tr>
+        <tr>
+          <td>Alamat</td>
           <td>Dsn. Jeruk Kidul RT/RW 01/06, Ds. Mabung, Kec. Baron, Kab. Nganjuk</td>
-	  </tr>
-	  <tr>
-    	  <td>Sekolah</td>
-    	  <td>SMK NEGERI 1 Kertosono</td>
-	  </tr>
-	  <tr>
-    	  <td>Hobi</td>
-    	  <td>Tidooooorrrrrrrrr  Sayaaaaaaaaaaaaaaannnnnnnnnnnnggggggggggggggggggggg</td>
-	  </tr>
-	  <tr>
-   		   <td>Cita-Cita</td>
-   		   <td>Sukse Di Masa Depan</td>
-	  </tr>
-	  <tr>
-  		   <td>Misi Rahasia</td>
-  		   <td>Ingin tidur dengan tenang tanoa ada yang mengganggu sama sekali wkwkwkwkwkwkwkwkwkwkwkaroasfskjhabdksvjbasdufbqihewbfkahsbviuabevi  mbuh lahh iki tok ae</td>
-	  </tr>
-	</table>
+        </tr>
+        <tr>
+          <td>Sekolah</td>
+          <td>SMK NEGERI 1 Kertosono</td>
+        </tr>
+        <tr>
+          <td>Hobi</td>
+          <td>Tidooooorrrrrrrrr  Sayaaaaaaaaaaaaaaannnnnnnnnnnnggggggggggggggggggggg</td>
+        </tr>
+        <tr>
+          <td>Cita-Cita</td>
+          <td>Sukse Di Masa Depan</td>
+        </tr>
+        <tr>
+          <td>Misi Rahasia</td>
+          <td>Ingin tidur dengan tenang tanoa ada yang mengganggu sama sekali wkwkwkwkwkwkwkwkwkwkwkaroasfskjhabdksvjbasdufbqihewbfkahsbviuabevi  mbuh lahh iki tok ae</td>
+        </tr>
+      </table>
+    </div>
+    <div id="myModal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="imgZoom">
+    </div>
   </div>
-  <div id="myModal" class="modal">
-    <span class="close">&times;</span>
-    <img class="modal-content" id="imgZoom">
-  </div>
+
   <script>
-	const loginForm = document.getElementById('loginForm');
-    const errorMsg = document.getElementById('errorMsg');
-    const loginScreen = document.getElementById('loginScreen');
-    const biodataWrapper = document.getElementById('biodataWrapper');
-    
-    const correctUsername = 'selamat';
-    const correctPassword = 'takok to';
-    loginForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      if (username === correctUsername && password === correctPassword) {
-        
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const errorMsg = document.getElementById('errorMsg');
+      const loginScreen = document.getElementById('loginScreen');
+      const biodataWrapper = document.getElementById('biodataWrapper');
+      
+      const correctUsername = 'selamat';
+      const correctPassword = 'takok to';
+
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        if (username === correctUsername && password === correctPassword) {
+          loginScreen.classList.add('hidden');
+          setTimeout(() => {
+            biodataWrapper.classList.add('visible');
+            document.body.style.overflow = 'auto';
+          }, 500);
+          errorMsg.style.display = 'none';
+        } else {
+          errorMsg.style.display = 'block';
+          setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
+        }
+      });
+
+      window.skipLogin = function() {
         loginScreen.classList.add('hidden');
         setTimeout(() => {
           biodataWrapper.classList.add('visible');
           document.body.style.overflow = 'auto';
         }, 500);
-        errorMsg.style.display = 'none';
-      } else {
-        
-        errorMsg.style.display = 'block';
-        setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
-      }
-	});
-	  
-  var modal = document.getElementById("myModal");
-  var img = document.getElementById("myImg");
-  var modalImg = document.getElementById("imgZoom");
-  var span = document.getElementsByClassName("close")[0];
+      };
+    });
 
-  img.onclick = function(){
-    modal.style.display = "block";
-    modalImg.src = this.src;
-  }
+    var modal = document.getElementById("myModal");
+    var img = document.getElementById("myImg");
+    var modalImg = document.getElementById("imgZoom");
+    var span = document.getElementsByClassName("close")[0];
 
-  span.onclick = function() { 
-    modal.style.display = "none";
-  }
+    img.onclick = function(){
+      modal.style.display = "block";
+      modalImg.src = this.src;
+    }
 
-  window.onclick = function(event) {
-    if (event.target == modal) {
+    span.onclick = function() { 
       modal.style.display = "none";
     }
-  }
+
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
   </script>
 </body>
 </html>
